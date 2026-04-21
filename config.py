@@ -1,0 +1,1 @@
+SQLALCHEMY_DATABASE_URI = 'postgresql://camiones:SLN3@localhost:5432/transporte_db'
