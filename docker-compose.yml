@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Servicio 1: Nuestro motor de base de datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: usuario_admin
+      POSTGRES_PASSWORD: password_seguro
+      POSTGRES_DB: mi_base_datos
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Servicio 2: Nuestra interfaz visual pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_ui
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+# Declaración de volúmenes para la persistencia de datos
+volumes:
+  pgdata:
