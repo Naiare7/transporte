@@ -1,4 +1,4 @@
-from database.db import db
+from src.database.db import db
 
 class Camion(db.Model):
     __tablename__ = 'camiones'
