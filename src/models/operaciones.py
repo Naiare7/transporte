@@ -49,6 +49,7 @@ class IncidenciaViaje(db.Model):
     
     viaje = db.relationship('Viaje', backref=db.backref('incidencias', lazy=True))
 
+
 #  ENTIDAD FACTURA (Cobro final al cliente)
 class Factura(db.Model):
     __tablename__ = 'facturas'
