@@ -36,6 +36,7 @@ class Viaje(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
+    se_entrego = db.Column(db.Boolean, default=False)
     fecha_salida = db.Column(db.DateTime)
     estado = db.Column(db.String(50), default='Programado') # Programado, En Tránsito, Completado
     
@@ -48,9 +49,15 @@ class Viaje(db.Model):
     vehiculo_id = db.Column(db.Integer, db.ForeignKey('vehiculos.id'), nullable=False)
 
     # Un viaje TIENE QUE tener una ruta asignada
-    ruta_id = db.Column(db.Integer, db.ForeignKey('rutas.id'), nullable =False)
+    ruta_id = db.Column(db.Integer, db.ForeignKey('rutas.id'), nullable=False)
 
+    pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False) 
+   
     # --- RELACIONES DE FLASK-SQLALCHEMY ---
     conductor = db.relationship('Conductor', backref=db.backref('viajes', lazy=True))
     vehiculo = db.relationship('Vehiculo', backref=db.backref('viajes', lazy=True))
     ruta = db.relationship('Ruta', backref=db.backref('viajes', lazy=True))
+
+    pedido = db.relationship('Pedido', backref=db.backref('viajes', lazy=True))
+    usuario = db.relationship('Usuario', backref=db.backref('viajes_planificados', lazy=True))
