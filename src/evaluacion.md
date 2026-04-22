@@ -1,166 +1,406 @@
-# Proyecto Transporte - Evaluación Técnica
+# Informe tecnico completo del proyecto "transporte"
 
-## 1. Estructura del Proyecto
+Fecha de evaluacion: 2026-04-22
+
+## 1) Resumen ejecutivo
+
+El proyecto es una API Flask con SQLAlchemy, Flask-Migrate y JWT, pensada para gestionar operaciones de transporte de grano.
+La arquitectura esta preparada para ejecutarse de dos formas:
+
+- Modo local: `python run.py` + PostgreSQL en Docker (expuesto en `localhost:5433`).
+- Modo Docker completo: `docker compose` con servicio `app` + `db` + `pgadmin`.
+
+El enlace servidor-base de datos se hace por `DATABASE_URL`, cargada desde `.env` o desde variables inyectadas por Docker Compose.
+
+## 2) Estructura real y funcion de cada pieza
 
 ```
 /home/penascalf5/transporte/
-├── .env                    # Variables de entorno (credenciales BD)
-├── docker-compose.yml      # Contenedores Docker (PostgreSQL + pgAdmin)
-├── run.py                 # Punto de entrada del servidor Flask
-├── requirements.txt       # Dependencias Python
-├── src/
-│   ├── app.py             # Configuración principal de Flask
-│   ├── config.py          # Carga de configuración desde .env
-│   ├── database/
-│   │   └── db.py          # Inicialización de SQLAlchemy
-│   ├── models/
-│   │   ├── vehiculos.py   # Modelo Camion (tabla camiones)
-│   │   └── actores.py     # Otros modelos
-│   └── routes/
-│       └── routes.py     # Endpoints de la API
-└── migrations/
-    └── versions/
-        └── ...           # Migraciones Alembic
+├── run.py
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+├── requirements.txt
+├── migrations/
+│   ├── alembic.ini
+│   ├── env.py
+│   └── versions/
+│       ├── 8c5b4614cb00_init.py
+│       └── 2d579c784a37_creacion_vehiculos_rutas_viajes.py
+└── src/
+    ├── app.py
+    ├── config.py
+    ├── database/db.py
+    ├── routes/routes.py
+    └── models/
+        ├── actores.py
+        ├── logistica_flota.py
+        ├── operaciones.py
+        └── __init__.py
 ```
 
-## 2. Tecnologías Utilizadas
+## 3) Como se enlaza la logica (flujo interno)
 
-| Tecnología | Propósito | Versión |
-|------------|----------|---------|
-| **Flask** | Framework web/backend | 3.1.3 |
-| **Flask-SQLAlchemy** | ORM para base de datos | 3.1.1 |
-| **Flask-Migrate** | Gestor de migraciones (Alembic) | 4.1.0 |
-| **Flask-JWT-Extended** | Autenticación con tokens JWT | 4.7.1 |
-| **SQLAlchemy** | ORM base | 2.0.49 |
-| **PostgreSQL** | Base de datos relacional | 15 (Docker) |
-| **pgAdmin** | Interfaz visual para PostgreSQL | 4 (Docker) |
-| **Python-dotenv** | Cargar variables desde .env | 1.2.2 |
-| **psycopg2-binary** | Driver PostgreSQL para Python | 2.9.12 |
+Flujo de arranque principal:
 
-## 3. Base de Datos
+1. `run.py` importa `create_app` desde `src/app.py`.
+2. `create_app()` crea la app Flask.
+3. `app.config.from_object(Config)` carga configuracion desde `src/config.py`.
+4. `db.init_app(app)` inicializa SQLAlchemy.
+5. `Migrate(app, db)` conecta Flask-Migrate con SQLAlchemy.
+6. `JWTManager(app)` habilita JWT.
+7. Dentro de `app.app_context()` se importan modelos y blueprint para registrar tablas y rutas.
+8. Se registra el blueprint `routes_main`.
+9. Se expone endpoint raiz `/`.
 
-### Tipo de Base de Datos
-- **PostgreSQL 15** (imagen Alpine: `postgres:15-alpine`)
-- Es una base de datos relacional (RDBMS) robusta y de código abierto
+Flujo de request de API:
 
-### Configuración (docker-compose.yml)
+1. Llega una peticion HTTP.
+2. Flask la enruta al blueprint `main` en `src/routes/routes.py`.
+3. La funcion de ruta usa modelos SQLAlchemy para consultar o mutar datos.
+4. SQLAlchemy ejecuta SQL contra PostgreSQL usando `psycopg2`.
+5. La respuesta vuelve como JSON.
+
+## 4) Conexion servidor <-> base de datos
+
+La configuracion central esta en `src/config.py`:
+
+- Se calcula la raiz del proyecto.
+- Se carga `.env` con `load_dotenv(...)`.
+- `SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")`.
+
+### URL usada segun entorno
+
+En local (`.env`):
+
+`DATABASE_URL=postgresql://camiones:SLN3@localhost:5433/mydb`
+
+En Docker Compose (servicio `app`):
+
+`DATABASE_URL=postgresql://camiones:SLN3@db:5432/mydb`
+
+Interpretacion:
+
+- `localhost:5433` se usa desde la maquina host.
+- `db:5432` se usa dentro de la red interna de Docker (nombre de servicio `db`).
+
+## 5) Docker: imagenes, contenedores y red
+
+### Imagen de aplicacion (Dockerfile)
+
+- Base: `python:3.11-slim`
+- Instala compilador y headers para `psycopg2`: `gcc libpq-dev`
+- Instala dependencias desde `requirements.txt`
+- Copia el proyecto a `/app`
+- `CMD` por defecto: `gunicorn --bind 0.0.0.0:5000 src.app:create_app()`
+
+### Orquestacion (docker-compose.yml)
+
+Servicios:
+
+- `app`
+  - `build: .`
+  - `command: python run.py` (esto sobrescribe el `CMD` de Gunicorn del Dockerfile)
+  - Expone `5000:5000`
+  - Depende de `db`
+- `db`
+  - Imagen `postgres:15-alpine`
+  - Expone `5433:5432`
+  - Variables `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
+- `pgadmin`
+  - Imagen `dpage/pgadmin4`
+  - Expone `5050:80`
+  - Depende de `db`
+
+## 6) Como se guardan los datos (persistencia)
+
+Estado actual real:
+
+- En `docker-compose.yml` se declara `volumes: pgdata:`
+- Pero el servicio `db` NO monta ese volumen en `/var/lib/postgresql/data`
+
+Consecuencia:
+
+- Si solo reinicias el contenedor, normalmente los datos siguen.
+- Si eliminas/recreas contenedor (`docker compose down` + `up`), hay alto riesgo de perder datos.
+
+Configuracion recomendada para persistencia real:
+
 ```yaml
-services:
-  db:
-    image: postgres:15-alpine
-    container_name: postgres_db
-    environment:
-      POSTGRES_USER: usuario_admin
-      POSTGRES_PASSWORD: password_seguro
-      POSTGRES_DB: mi_base_datos
-    ports:
-      - "5433:5432"    # Puerto 5433 en host, 5432 en contenedor
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+db:
+  ...
+  volumes:
+    - pgdata:/var/lib/postgresql/data
 ```
 
-### Credenciales de Conexión
-- **Host**: `localhost`
-- **Puerto**: `5433`
-- **Usuario**: `usuario_admin`
-- **Contraseña**: `password_seguro`
-- **Base de datos**: `mi_base_datos`
-- **URL completa**: `postgresql://usuario_admin:password_seguro@localhost:5433/mi_base_datos`
+## 7) Modelo de datos y relaciones actuales
 
-## 4. Cómo Conectar la Base de Datos
+### Modulo `actores.py`
 
-La conexión se configura automáticamente mediante:
+- `Usuario`
+- `Cliente`
+- `Conductor`
 
-1. **Archivo `.env`**: Contiene `DATABASE_URL` con las credenciales
-2. **`src/config.py`**: Lee el `.env` con `load_dotenv()` y `os.getenv()`
-3. **`src/app.py`**: Pasa la URI a SQLAlchemy via `app.config.from_object(Config)`
-4. **`src/database/db.py`**: Inicializa `SQLAlchemy(app)` con la configuración
+### Modulo `logistica_flota.py`
 
-La app Flask usa **SQLAlchemy** como ORM que se conecta a PostgreSQL mediante el driver **psycopg2-binary**.
+- `Vehiculo`
+- `Ruta`
+- `Viaje`
+  - FK `conductor_id -> conductores.id`
+  - FK `vehiculo_id -> vehiculos.id`
+  - FK `ruta_id -> rutas.id`
 
-## 5. Cómo Levantar el Servidor y la Base de Datos
+### Modulo `operaciones.py`
 
-### Paso 1: Iniciar Docker (contenedores)
+- `Producto`
+- `Pedido` (FK a `clientes`)
+- `DetallePedido` (FK a `pedidos` y `productos`)
+- `IncidenciaViaje` (FK a `viajes`)
+- `InformeDescarga` (FK unico a `viajes`)
+- `Factura` (FK unico a `pedidos`)
+
+## 8) Migraciones y estado de esquema
+
+Hay inconsistencias que debes conocer:
+
+1. `2d579c784a37_creacion_vehiculos_rutas_viajes.py` referencia `down_revision='9894d6878205'`, pero ese archivo no existe en `migrations/versions/`.
+2. Existe una migracion inicial `8c5b4614cb00_init.py` que crea `camiones`, pero luego otra migracion elimina `camiones` y crea `vehiculos`.
+3. Las entidades de `operaciones.py` no aparecen en las migraciones actuales visibles.
+
+Impacto:
+
+- `flask db upgrade` podria fallar o dejar esquema incompleto segun el estado real de tu BD.
+
+## 9) Rutas y servidor HTTP
+
+Ruta registrada:
+
+- `GET /camiones`
+
+Observacion importante:
+
+- La ruta fue corregida para consultar `Vehiculo.query.all()` y devolver la lista correctamente.
+
+## 10) Como levantar todo el proyecto
+
+### Opcion A: Todo en Docker
+
+1. Construir y levantar:
 ```bash
-docker-compose up -d
+docker compose up --build -d
 ```
-Esto levanta:
-- `postgres_db` (PostgreSQL en puerto 5433)
-- `pgadmin_ui` (pgAdmin en puerto 5050)
+2. Aplicar migraciones dentro del contenedor de app:
+```bash
+docker compose exec app flask --app run.py db upgrade
+```
+3. Verificar API:
+```bash
+curl http://localhost:5000/
+```
+4. Verificar pgAdmin:
+   - URL: `http://localhost:5050`
+   - Usuario: `admin@admin.com`
+   - Password: `admin`
 
-El servicio `db` tiene `restart: always`, así que se reinicia automáticamente si falla.
+### Opcion B: App local + DB en Docker
 
-### Paso 2: Activar el entorno virtual
+1. Levantar solo base y pgAdmin:
+```bash
+docker compose up -d db pgadmin
+```
+2. Activar entorno local:
 ```bash
 source myEnv/bin/activate
 ```
-
-### Paso 3: Ejecutar migraciones (crear tablas)
+3. Aplicar migraciones:
 ```bash
-flask db upgrade
+flask --app run.py db upgrade
 ```
-O también:
-```bash
-alembic upgrade head
-```
-
-### Paso 4: Iniciar el servidor Flask
+4. Levantar servidor:
 ```bash
 python run.py
 ```
-Servidor disponible en: `http://localhost:5000`
 
-### ¿Se levanta automáticamente?
-- **Docker**: Sí, con `restart: always` en docker-compose.yml
-- **Flask**: No, debe iniciarse manualmente con `python run.py`
-- Para automatización total, se podría usar **systemd**, **PM2**, o incluir Flask en docker-compose
+## 11) Como conectar el servidor a la base (paso a paso tecnico)
 
-### Acceso a pgAdmin (interfaz visual)
-- URL: `http://localhost:5050`
-- Email: `admin@admin.com`
-- Contraseña: `admin`
+1. Define `DATABASE_URL` correcta para tu contexto (host o Docker interno).
+2. `Config` lee esa variable y la asigna a SQLAlchemy.
+3. `db.init_app(app)` crea el engine con ese DSN.
+4. Al ejecutar una consulta del ORM, SQLAlchemy abre conexion via `psycopg2`.
+5. PostgreSQL responde y SQLAlchemy transforma filas en objetos Python.
 
-## 6. Estado Actual del Proyecto
+## 12) Diagnostico final del estado actual
 
-### Lo que YA está implementado:
-- ✅ Estructura Flask completa
-- ✅ Conexión a PostgreSQL configurada
-- ✅ Modelo `Camion` creado (tabla `camiones`)
-- ✅ Ruta `/camiones` (GET) funcionando
-- ✅ Sistema de migraciones Alembic configurado
-- ✅ Autenticación JWT preparada (JWTManager)
+Fortalezas:
 
-### Tablas existentes:
-| Tabla | Estado | Descripción |
-|-------|--------|-------------|
-| `camiones` | ✅ Creada | Modelo en `src/models/vehiculos.py` |
+- Arquitectura Flask modular bien encaminada.
+- Separacion clara entre config, modelos, rutas y acceso a BD.
+- Entorno Docker con `app`, `db` y `pgadmin`.
+- Base para migraciones y autenticacion JWT ya integrada.
 
-## 7. Próximo Paso: Crear CRUDs
+Riesgos tecnicos actuales:
 
-El proyecto **SÍ está listo** para comenzar a crear las tablas y CRUDS.
+1. Cadena de migraciones inconsistente (`down_revision` faltante).
+2. Persistencia de PostgreSQL no montada en volumen activo.
+3. Hay dos fabricas de app (`src/app.py` y `src/__init__.py`), lo que puede generar confusion si se usa la ruta incorrecta.
 
-### sugerencia de siguiente paso:
+## 13) Recomendacion de orden de correccion
 
-1. **Completar el modelo `Camion`** - añadir más campos o relaciones
-2. **Crear nuevos modelos** según necesidad, por ejemplo:
-   - `Chofer` (conductores)
-   - `Viaje` (registro de viajes)
-   - `Cliente`
-   - `Pedido`
+1. Reparar historial de migraciones para que `flask db upgrade` sea confiable.
+2. Montar volumen `pgdata` en el servicio `db`.
+3. Unificar punto de entrada/fabrica de app para evitar duplicidad de configuracion.
 
-3. **Crear CRUD completo** para cada entidad:
-   - **C**reate: `POST /recurso`
-   - **R**ead: `GET /recurso` y `GET /recurso/<id>`
-   - **U**pdate: `PUT /recurso/<id>`
-   - **D**elete: `DELETE /recurso/<id>`
+## 14) Guia paso a paso: conectar pgAdmin (Docker) y avanzar con tablas/CRUD
 
-4. **Añadir autenticación** con JWT a las rutas protegidas
+### 14.1 Levantar servicios necesarios
 
-### Ejemplo de siguiente paso recomendado:
+Si aun no estan levantados, ejecuta:
+
 ```bash
-# Crear nuevo modelo
-flask db migrate -m "Crear tabla choferes"
-flask db upgrade
+docker compose up -d db pgadmin
 ```
 
-Luego crear las rutas对应的es en `src/routes/routes.py`.
+Si tambien quieres levantar la API en Docker:
+
+```bash
+docker compose up -d app
+```
+
+### 14.2 Entrar a pgAdmin
+
+1. Abre en navegador: `http://localhost:5050`
+2. Login con:
+   - Email: `admin@admin.com`
+   - Password: `admin`
+
+### 14.3 Registrar el servidor PostgreSQL dentro de pgAdmin
+
+1. En el panel izquierdo: click derecho en `Servers` -> `Register` -> `Server...`
+2. Pestana `General`:
+   - `Name`: `transporte-db` (o el nombre que quieras)
+3. Pestana `Connection`:
+   - `Host name/address`: `db`
+   - `Port`: `5432`
+   - `Maintenance database`: `mydb`
+   - `Username`: `camiones`
+   - `Password`: `SLN3`
+   - Activa `Save password`
+4. Click en `Save`.
+
+Importante:
+- Como pgAdmin corre en Docker Compose junto a PostgreSQL, el host correcto es `db` (nombre del servicio), no `localhost`.
+
+### 14.4 Verificar que quedo conectado
+
+1. Expande:
+   - `Servers` -> `transporte-db` -> `Databases` -> `mydb` -> `Schemas` -> `public` -> `Tables`
+2. Si no ves tablas aun, es normal: primero debes aplicar migraciones.
+
+### 14.5 Crear tablas de forma correcta (recomendado)
+
+Para este proyecto, lo correcto es crear tablas con Flask-Migrate/Alembic, no manualmente desde pgAdmin.
+
+Si usas la app en Docker:
+
+```bash
+docker compose exec app flask --app run.py db migrate -m "sync modelos"
+docker compose exec app flask --app run.py db upgrade
+```
+
+Si usas la app local (venv):
+
+```bash
+source myEnv/bin/activate
+flask --app run.py db migrate -m "sync modelos"
+flask --app run.py db upgrade
+```
+
+Luego en pgAdmin:
+- Click derecho en `Tables` -> `Refresh` para ver las nuevas tablas.
+
+### 14.6 Si quieres crear algo rapido en SQL desde pgAdmin
+
+1. Selecciona `mydb`
+2. Abre `Tools` -> `Query Tool`
+3. Ejecuta SQL, por ejemplo:
+
+```sql
+SELECT current_database(), current_user;
+```
+
+Puedes crear tablas manuales, pero para mantener el proyecto ordenado y sin conflictos, usa migraciones para tablas del sistema principal.
+
+### 14.7 Flujo recomendado para avanzar en CRUD
+
+1. Definir/ajustar modelos en `src/models/`.
+2. Generar migracion (`flask db migrate ...`).
+3. Aplicar migracion (`flask db upgrade`).
+4. Verificar tablas en pgAdmin.
+5. Crear endpoints CRUD en `src/routes/routes.py`.
+6. Probar endpoints (Postman/curl) y validar cambios en pgAdmin.
+
+### 14.8 Errores tipicos y solucion rapida
+
+- Error de conexion en pgAdmin:
+  - Revisa que `db` y `pgadmin` esten arriba: `docker compose ps`
+  - Verifica que usas `host=db` y `port=5432` dentro de pgAdmin
+- Error al crear tablas con migraciones:
+  - Revisa el historial de migraciones, porque en este proyecto hay inconsistencias de `down_revision`
+- No aparecen tablas en pgAdmin:
+  - Haz `Refresh` sobre `Tables`
+  - Confirma que ejecutaste `flask db upgrade` contra la misma BD (`mydb`)
+
+## 15) Solo abrir tu pgAdmin de Docker (pgadmin_ui)
+
+Esta seccion es exactamente para este servicio:
+
+```yaml
+pgadmin:
+  image: dpage/pgadmin4
+  container_name: pgadmin_ui
+  restart: always
+  environment:
+    PGADMIN_DEFAULT_EMAIL: admin@admin.com
+    PGADMIN_DEFAULT_PASSWORD: admin
+  ports:
+    - "5050:80"
+  depends_on:
+    - db
+```
+
+Paso a paso:
+
+1. Desde la raiz del proyecto (`/home/penascalf5/transporte`), levanta pgAdmin:
+```bash
+docker compose up -d pgadmin
+```
+
+2. Verifica que quedo levantado:
+```bash
+docker compose ps
+```
+Debes ver `pgadmin_ui` en estado `Up`.
+
+3. Abre en el navegador:
+`http://localhost:5050`
+
+4. Inicia sesion en pgAdmin:
+- Email: `admin@admin.com`
+- Password: `admin`
+
+5. Si no abre, revisa logs:
+```bash
+docker compose logs -f pgadmin
+```
+
+Nota:
+- Aunque levantes solo `pgadmin`, por `depends_on` Docker Compose tambien levantara `db`.
+
+
+
+
+
+
+
+
+

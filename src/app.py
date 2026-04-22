@@ -17,7 +17,7 @@ def create_app():
 
     # Importar modelos (para que Flask y Migrate sepan que existen al arrancar)
     with app.app_context():
-        from src.models import actores, vehiculos
+        from src.models import actores, logistica_flota
         from src.routes.routes import main  # Importar las rutas después de los modelos 
         
         if 'routes_main' not in app.blueprints:
