@@ -17,7 +17,7 @@ migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 # Importar modelos (para que Flask y Migrate sepan que existen al arrancar)
-from src.models import actores, vehiculos
+from src.models import actores, logistica_flota
 
 @app.route('/')
 def index():

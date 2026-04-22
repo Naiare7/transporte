@@ -1,7 +1,7 @@
 from src.database.db import db
 from datetime import datetime
 
-# 1. ENTIDAD USUARIO (Administradores)
+#  ENTIDAD USUARIO (Administradores)
 class Usuario(db.Model):
     __tablename__ = 'usuarios' # Nombre de la tabla en PostgreSQL
     
@@ -12,7 +12,7 @@ class Usuario(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
 
-# 2. ENTIDAD CLIENTE (Los que piden el transporte)
+#  ENTIDAD CLIENTE (Los que piden el transporte)
 class Cliente(db.Model):
     __tablename__ = 'clientes'
     
@@ -25,7 +25,7 @@ class Cliente(db.Model):
     # RELACIÓN: Un cliente tendrá muchos pedidos (Lo conectaremos más adelante)
     # pedidos = db.relationship('Pedido', backref='cliente', lazy=True)
 
-# 3. ENTIDAD CONDUCTOR (Los que manejan los camiones)
+#  ENTIDAD CONDUCTOR (Los que manejan los camiones)
 class Conductor(db.Model):
     __tablename__ = 'conductores'
     
