@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from ..database.db import db
-from ..models.vehiculos import Camion
+from ..models import actores, vehiculos, operaciones
 
 main = Blueprint('routes_main', __name__)
 
