@@ -10,4 +10,4 @@ RUN apt-get update && apt-get install -y gcc libpq-dev \
 
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "src.app:create_app()"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "src.app:create_app"]
