@@ -38,6 +38,8 @@ services:
       - "5050:80"
     depends_on:
       - db
+    volumes:
+       - pgdata:/var/lib/postgresql/data
 
 # Declaración de volúmenes para la persistencia de datos
 volumes: 
