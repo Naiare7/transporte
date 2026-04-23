@@ -6,7 +6,7 @@ def app():
     app = create_app()
     app.config.update({
         "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:" # Base de datos rápida en memoria para tests
+        "SQLALCHEMY_DATABASE_URI": "postgresql://camiones:SLN3@db:5432/mydb"
     })
     yield app
 
