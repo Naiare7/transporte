@@ -4,28 +4,23 @@ from src.database.db import db
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 
-# Inicializar la aplicación Flask
-app = Flask(__name__)
-app.config.from_object(Config)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-# Importar modelos (para que Flask y Migrate sepan que existen al arrancar)
-with app.app_context():
-    from src.models import actores, logistica_flota
-    from src.routes.routes import main  # Importar las rutas después de los modelos 
+    db.init_app(app)
+    Migrate(app, db) 
+    JWTManager(app)
+
+    with app.app_context():
+        from src.models import actores, logistica_flota, operaciones
+        from src.routes.routes import main
         
-    if 'routes_main' not in app.blueprints:
-        app.register_blueprint(main)
+        if 'routes_main' not in app.blueprints:
+            app.register_blueprint(main, url_prefix='/api')
 
-# Importar modelos
-from src.models import actores, logistica_flota, operaciones
+    @app.route('/')
+    def index():
+        return "¡Servidor de Transporte funcionando!"
 
-# =========================================================
-# ¡EL PUENTE! (Asegúrate de que estas dos líneas estén aquí)
-# =========================================================
-from src.routes.routes import api_bp
-app.register_blueprint(api_bp, url_prefix='/api')
-
-# Ruta de prueba inicial
-@app.route('/')
-def index():
-    return "¡Servidor de Transporte funcionando!"
+    return app
