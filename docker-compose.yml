@@ -1,19 +1,30 @@
-version: '3.8'
 
 services:
   # Servicio 1: Nuestro motor de base de datos PostgreSQL
+  app:
+    build: .
+    command: python run.py
+    volumes:
+      - .:/app  # Sincroniza tu código (punto actual con /app en el contenedor)
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://camiones:SLN3@db:5432/mydb
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+  
   db:
     image: postgres:15-alpine
     container_name: postgres_db
     restart: always
     environment:
-      POSTGRES_USER: usuario_admin
-      POSTGRES_PASSWORD: password_seguro
-      POSTGRES_DB: mi_base_datos
+      POSTGRES_USER: camiones
+      POSTGRES_PASSWORD: SLN3
+      POSTGRES_DB: mydb
     ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - "5433:5432"
+    
 
   # Servicio 2: Nuestra interfaz visual pgAdmin
   pgadmin:
@@ -29,5 +40,5 @@ services:
       - db
 
 # Declaración de volúmenes para la persistencia de datos
-volumes:
+volumes: 
   pgdata:

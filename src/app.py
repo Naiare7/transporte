@@ -8,10 +8,13 @@ from flask_jwt_extended import JWTManager
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Inicializar extensiones
-db.init_app(app)
-migrate = Migrate(app, db)
-jwt = JWTManager(app)
+# Importar modelos (para que Flask y Migrate sepan que existen al arrancar)
+with app.app_context():
+    from src.models import actores, logistica_flota
+    from src.routes.routes import main  # Importar las rutas después de los modelos 
+        
+    if 'routes_main' not in app.blueprints:
+        app.register_blueprint(main)
 
 # Importar modelos
 from src.models import actores, logistica_flota, operaciones
