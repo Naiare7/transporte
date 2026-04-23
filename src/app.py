@@ -13,7 +13,7 @@ def create_app():
     JWTManager(app)
 
     with app.app_context():
-        from src.models import actores, logistica_flota, operaciones
+        from src import models 
         from src.routes.routes import main
         
         if 'routes_main' not in app.blueprints:

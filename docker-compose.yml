@@ -28,7 +28,7 @@ services:
       POSTGRES_DB: mydb
     ports:
       - "5433:5432"
-    # ¡CORRECCIÓN CRÍTICA AQUÍ! Necesitas vincular el volumen al servicio
+   
     volumes:
       - pgdata:/var/lib/postgresql/data
     
