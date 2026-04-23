@@ -1,11 +1,8 @@
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from .models.actores import Usuario, Cliente, Conductor
 
-import os
-
-db = SQLAlchemy()   
+db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app():
