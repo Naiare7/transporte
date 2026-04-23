@@ -1,7 +1,9 @@
-from flask import Blueprint, request, jsonify
-from src.database.db import db
-from src.models.actores import Cliente
-from src.models.logistica_flota import Vehiculo # Importamos tu Vehículo desde su archivo correcto
+from flask import Blueprint, jsonify
+from ..models.logistica_flota import Vehiculo
 
-# Creamos el "Plano" (Blueprint) de nuestras rutas
-api_bp = Blueprint('api', __name__)
+main = Blueprint('routes_main', __name__)
+
+@main.route('/camiones', methods=['GET'])
+def get_camiones():
+    lista_camiones = Vehiculo.query.all()
+    return jsonify([c.to_dict() for c in lista_camiones]), 200

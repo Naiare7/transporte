@@ -1,7 +1,7 @@
 """Creacion vehiculos rutas viajes
 
 Revision ID: 2d579c784a37
-Revises: 9894d6878205
+Revises: 8c5b4614cb00
 Create Date: 2026-04-22 09:39:13.667291
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '2d579c784a37'
-down_revision = '9894d6878205'
+down_revision = '8c5b4614cb00'
 branch_labels = None
 depends_on = None
 
