@@ -18,7 +18,7 @@ def create_app():
         from src.routes.routes import main
         from src.routes.actores import bp as actores_bp
         from src.routes.logistica import bp as logistica_bp
-        from src.routes.productos import bp as productos_bp
+        # from src.routes.productos import bp as productos_bp  # TODO: Crear ProductoService
         from src.routes.transacciones import bp as transacciones_bp
         from src.routes.seguimiento import bp as seguimiento_bp
         from src.routes.auth import bp as auth_bp
@@ -29,8 +29,8 @@ def create_app():
             app.register_blueprint(actores_bp)
         if 'logistica' not in app.blueprints:
             app.register_blueprint(logistica_bp)
-        if 'operaciones' not in app.blueprints:
-            app.register_blueprint(productos_bp)
+        # if 'operaciones' not in app.blueprints:
+        #     app.register_blueprint(productos_bp)
         if 'transacciones' not in app.blueprints:
             app.register_blueprint(transacciones_bp)
         if 'seguimiento' not in app.blueprints:
