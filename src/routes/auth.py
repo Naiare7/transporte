@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token
 from marshmallow import ValidationError
 from src.services.auth_service import AuthService
 from src.schemas.auth_schema import UsuarioSchema, LoginSchema
+from src.models.actores import Usuario
 
 bp = Blueprint('auth', __name__, url_prefix='/api')
 
