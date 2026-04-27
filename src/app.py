@@ -21,7 +21,6 @@ def create_app(test_config=None):
         from src.models import actores, logistica_flota, operaciones
 
         # Importación de Blueprints (Rutas)
-        from src.routes.routes import main
         from src.routes.actores import bp as actores_bp
         from src.routes.logistica import bp as logistica_bp
         from src.routes.transacciones import bp as transacciones_bp
@@ -29,9 +28,6 @@ def create_app(test_config=None):
         from src.routes.auth import bp as auth_bp
 
         # Registro de Blueprints
-        if 'routes_main' not in app.blueprints:
-            app.register_blueprint(main, url_prefix='/api')
-            
         if 'actores' not in app.blueprints:
             app.register_blueprint(actores_bp)
             
