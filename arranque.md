@@ -23,7 +23,7 @@ transporte/
 │   │   ├── logistica.py    # CRUD Vehiculo, Ruta
 │   │   ├── productos.py    # CRUD Producto
 │   │   ├── transacciones.py # CRUD Pedido, DetallePedido, Viaje
-│   │   ├── seguimiento.py  # CRUD Incidencia, Informe, Factura
+│   │   ├── seguimiento.py  # CRUD Incidencia, Factura
 │   │   └── auth.py         # Login JWT
 │   ├── services/
 │   │   └── *_service.py    # Lógica de negocio
@@ -255,23 +255,6 @@ curl -X POST http://localhost:5000/api/incidencias-viaje \
   -d '{"viaje_id":1,"descripcion":"Avería en rueda","gravedad":"Leve"}'
 ```
 
-#### Informes de Descarga (`/api/informes-descarga`)
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/informes-descarga` | Listar todos |
-| GET | `/api/informes-descarga/<id>` | Obtener uno |
-| POST | `/api/informes-descarga` | Crear |
-| PUT | `/api/informes-descarga/<id>` | Actualizar |
-| GET | `/api/viajes/<id>/informe-descarga` | Informe de un viaje |
-
-```bash
-# Crear informe de descarga
-curl -X POST http://localhost:5000/api/informes-descarga \
-  -H "Content-Type: application/json" \
-  -d '{"viaje_id":1,"toneladas_entregadas_reales":19.8,"porcentaje_humedad":11}'
-```
-
 #### Facturas (`/api/facturas`)
 
 | Método | Endpoint | Descripción |
@@ -306,7 +289,6 @@ curl -X POST http://localhost:5000/api/facturas \
 
 4. Seguimiento:
    - IncidenciaViaje (si hay problemas)
-   - InformeDescarga (al finalizar)
 
 5. Facturación:
    - Factura (calcula total desde pedidos)
@@ -333,7 +315,7 @@ docker exec postgres_db psql -U camiones -d mydb -c "\dt"
 docker exec postgres_db psql -U camiones -d mydb -c "SELECT * FROM clientes;"
 
 # Limpiar todos los datos
-docker exec postgres_db psql -U camiones -d mydb -c "TRUNCATE TABLE usuarios, clientes, conductores, vehiculos, rutas, productos, pedidos, detalles_pedido, viajes, incidencias_viaje, informes_descarga, facturas CASCADE;"
+docker exec postgres_db psql -U camiones -d mydb -c "TRUNCATE TABLE usuarios, clientes, conductores, vehiculos, rutas, productos, pedidos, detalles_pedido, viajes, incidencias_viaje, facturas CASCADE;"
 ```
 
 ---
