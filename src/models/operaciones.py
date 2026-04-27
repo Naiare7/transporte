@@ -50,19 +50,6 @@ class IncidenciaViaje(db.Model):
     viaje = db.relationship('Viaje', backref=db.backref('incidencias', lazy=True))
 
 
-#  ENTIDAD INFORME DE DESCARGA (Resultado de la entrega)
-class InformeDescarga(db.Model):
-    __tablename__ = 'informes_descarga'
-
-    id = db.Column(db.Integer, primary_key=True)
-    viaje_id = db.Column(db.Integer, db.ForeignKey('viajes.id'), nullable=False)
-    toneladas_entregadas_reales = db.Column(db.Float, nullable=False)
-    porcentaje_humedad = db.Column(db.Float)
-    fecha_descarga = db.Column(db.DateTime, default=func.now())
-
-    viaje = db.relationship('Viaje', backref=db.backref('informes_descarga', lazy=True))
-
-
 #  ENTIDAD FACTURA (Cobro final al cliente)
 class Factura(db.Model):
     __tablename__ = 'facturas'

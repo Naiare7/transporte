@@ -28,23 +28,6 @@ class SeguimientoService:
         db.session.delete(incidencia)
         db.session.commit()
 
-    @staticmethod
-    def get_informe_by_viaje(viaje_id):
-        return InformeDescarga.query.filter_by(viaje_id=viaje_id).first()
-
-    @staticmethod
-    def create_informe(data):
-        informe = InformeDescarga(**data)
-        db.session.add(informe)
-        db.session.commit()
-        return informe
-
-    @staticmethod
-    def update_informe(informe, data):
-        for key, value in data.items():
-            setattr(informe, key, value)
-        db.session.commit()
-        return informe
 
     @staticmethod
     def get_all_facturas():

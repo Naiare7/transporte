@@ -7,12 +7,6 @@ class IncidenciaViajeSchema(Schema):
     gravedad = fields.Str(validate=validate.Length(max=50))
     fecha_incidencia = fields.DateTime(dump_only=True)
 
-class InformeDescargaSchema(Schema):
-    id = fields.Int(dump_only=True)
-    viaje_id = fields.Int(required=True)
-    toneladas_entregadas_reales = fields.Float(required=True)
-    porcentaje_humedad = fields.Float(allow_none=True)
-    fecha_descarga = fields.DateTime(dump_only=True)
 
 class FacturaSchema(Schema):
     id = fields.Int(dump_only=True)
