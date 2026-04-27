@@ -10,7 +10,7 @@ class ActoresService:
 
     @staticmethod
     def get_cliente_by_id(id):
-        return Cliente.query.get(id)
+        return db.session.get(Cliente, id)
 
     @staticmethod
     def create_cliente(data):
@@ -37,7 +37,7 @@ class ActoresService:
 
     @staticmethod
     def get_conductor_by_id(id):
-        return Conductor.query.get(id)
+        return db.session.get(Conductor, id)
 
     @staticmethod
     def create_conductor(data):

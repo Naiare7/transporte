@@ -1,12 +1,12 @@
 from src.database.db import db
-from datetime import datetime
+from sqlalchemy import func
 
 # ENTIDAD PEDIDO (La orden de transporte del cliente)
 class Pedido(db.Model):
     __tablename__ = 'pedidos'
     
     id = db.Column(db.Integer, primary_key=True)
-    fecha_pedido = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_pedido = db.Column(db.DateTime, default=func.now())
     estado = db.Column(db.String(50), default='Pendiente')
     observaciones_entrega = db.Column(db.Text)
 
@@ -40,7 +40,7 @@ class IncidenciaViaje(db.Model):
     __tablename__ = 'incidencias_viaje'
     
     id = db.Column(db.Integer, primary_key=True)
-    fecha_incidencia = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_incidencia = db.Column(db.DateTime, default=func.now())
     descripcion = db.Column(db.Text, nullable=False)
     gravedad = db.Column(db.String(50)) # Leve, Grave, Crítica
     
@@ -50,12 +50,25 @@ class IncidenciaViaje(db.Model):
     viaje = db.relationship('Viaje', backref=db.backref('incidencias', lazy=True))
 
 
+#  ENTIDAD INFORME DE DESCARGA (Resultado de la entrega)
+class InformeDescarga(db.Model):
+    __tablename__ = 'informes_descarga'
+
+    id = db.Column(db.Integer, primary_key=True)
+    viaje_id = db.Column(db.Integer, db.ForeignKey('viajes.id'), nullable=False)
+    toneladas_entregadas_reales = db.Column(db.Float, nullable=False)
+    porcentaje_humedad = db.Column(db.Float)
+    fecha_descarga = db.Column(db.DateTime, default=func.now())
+
+    viaje = db.relationship('Viaje', backref=db.backref('informes_descarga', lazy=True))
+
+
 #  ENTIDAD FACTURA (Cobro final al cliente)
 class Factura(db.Model):
     __tablename__ = 'facturas'
     
     id = db.Column(db.Integer, primary_key=True)
-    fecha_emision = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_emision = db.Column(db.DateTime, default=func.now())
     total = db.Column(db.Float, nullable=False)
     pagada = db.Column(db.Boolean, default=False)
     

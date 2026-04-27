@@ -1,5 +1,5 @@
 from src.database.db import db
-from src.models.operaciones import IncidenciaViaje, DetallePedido
+from src.models.operaciones import IncidenciaViaje, DetallePedido, Factura, InformeDescarga
 
 
 class SeguimientoService:
@@ -10,7 +10,7 @@ class SeguimientoService:
 
     @staticmethod
     def get_incidencia_by_id(id):
-        return IncidenciaViaje.query.get(id)
+        return db.session.get(IncidenciaViaje, id)
 
     @staticmethod
     def get_incidencias_by_viaje(viaje_id):
@@ -52,7 +52,7 @@ class SeguimientoService:
 
     @staticmethod
     def get_factura_by_id(id):
-        return Factura.query.get(id)
+        return db.session.get(Factura, id)
 
     @staticmethod
     def get_factura_by_pedido(pedido_id):

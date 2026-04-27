@@ -24,6 +24,8 @@ services:
       POSTGRES_DB: mydb
     ports:
       - "5433:5432"
+    volumes:
+       - pgdata:/var/lib/postgresql/data
     
 
   # Servicio 2: Nuestra interfaz visual pgAdmin
@@ -38,8 +40,6 @@ services:
       - "5050:80"
     depends_on:
       - db
-    volumes:
-       - pgdata:/var/lib/postgresql/data
 
 # Declaración de volúmenes para la persistencia de datos
 volumes: 

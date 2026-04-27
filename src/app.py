@@ -4,9 +4,11 @@ from src.database.db import db
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_object(Config)
+    if test_config:
+        app.config.update(test_config)
 
     db.init_app(app)
     Migrate(app, db) 
@@ -15,7 +17,6 @@ def create_app():
     # Importar modelos y rutas
     with app.app_context():
         from src.models import actores, logistica_flota
-        from src.routes.routes import main
         from src.routes.actores import bp as actores_bp
         from src.routes.logistica import bp as logistica_bp
         # from src.routes.productos import bp as productos_bp  # TODO: Crear ProductoService
@@ -23,8 +24,6 @@ def create_app():
         from src.routes.seguimiento import bp as seguimiento_bp
         from src.routes.auth import bp as auth_bp
 
-        if 'routes_main' not in app.blueprints:
-            app.register_blueprint(main)
         if 'actores' not in app.blueprints:
             app.register_blueprint(actores_bp)
         if 'logistica' not in app.blueprints:

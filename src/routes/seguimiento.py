@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
+from src.database.db import db
+from src.models.operaciones import InformeDescarga
 from src.services.seguimiento_service import SeguimientoService
 from src.schemas.seguimiento_schema import IncidenciaViajeSchema, InformeDescargaSchema, FacturaSchema
 
@@ -62,7 +64,7 @@ def get_informes():
 
 @bp.route('/informes-descarga/<int:id>', methods=['GET'])
 def get_informe(id):
-    informe = InformeDescarga.query.get(id)
+    informe = db.session.get(InformeDescarga, id)
     if not informe:
         return jsonify({'error': 'Informe no encontrado'}), 404
     return jsonify(informe_schema.dump(informe)), 200
@@ -89,7 +91,7 @@ def create_informe():
 
 @bp.route('/informes-descarga/<int:id>', methods=['PUT'])
 def update_informe(id):
-    informe = InformeDescarga.query.get(id)
+    informe = db.session.get(InformeDescarga, id)
     if not informe:
         return jsonify({'error': 'Informe no encontrado'}), 404
 

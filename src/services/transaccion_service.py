@@ -11,7 +11,7 @@ class TransaccionService:
 
     @staticmethod
     def get_pedido_by_id(id):
-        return Pedido.query.get(id)
+        return db.session.get(Pedido, id)
 
     @staticmethod
     def create_pedido(data):
@@ -38,7 +38,7 @@ class TransaccionService:
 
     @staticmethod
     def get_detalle_by_id(id):
-        return DetallePedido.query.get(id)
+        return db.session.get(DetallePedido, id)
 
     @staticmethod
     def get_detalles_by_pedido(pedido_id):
@@ -75,7 +75,7 @@ class TransaccionService:
 
     @staticmethod
     def get_viaje_by_id(id):
-        return Viaje.query.get(id)
+        return db.session.get(Viaje, id)
 
     @staticmethod
     def create_viaje(data):

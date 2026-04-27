@@ -10,7 +10,7 @@ class LogisticaService:
 
     @staticmethod
     def get_vehiculo_by_id(id):
-        return Vehiculo.query.get(id)
+        return db.session.get(Vehiculo, id)
 
     @staticmethod
     def create_vehiculo(data):
@@ -37,7 +37,7 @@ class LogisticaService:
 
     @staticmethod
     def get_ruta_by_id(id):
-        return Ruta.query.get(id)
+        return db.session.get(Ruta, id)
 
     @staticmethod
     def create_ruta(data):
