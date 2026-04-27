@@ -22,7 +22,7 @@ class DetallePedido(db.Model):
     __tablename__ = 'detalles_pedido'
     
     id = db.Column(db.Integer, primary_key=True)
-    # CAMBIO AQUÍ: En lugar de producto_id, usamos un String para describir la carga
+    # Usamos un String para describir la carga
     descripcion_carga = db.Column(db.String(150), nullable=False) # Ej: "Trigo limpio", "Pienso 20kg"
     
     cantidad = db.Column(db.Float, nullable=False) 
