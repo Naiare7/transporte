@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Servicio 1: Nuestra App de Flask (Backend)
+  app:
+    build: .
+    container_name: transporte_flask_app
+    command: python run.py
+    volumes:
+      - .:/app  # Sincroniza tu código en tiempo real
+    environment:
+      - FLASK_ENV=development
+      # Nota: Usar "db" aquí es correcto porque es el nombre del servicio en Docker
+      - DATABASE_URL=postgresql://camiones:SLN3@db:5432/mydb
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+  
+  # Servicio 2: Nuestro motor de base de datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: camiones
+      POSTGRES_PASSWORD: SLN3
+      POSTGRES_DB: mydb
+    ports:
+      - "5433:5432"
+   
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    
+  # Servicio 3: Nuestra interfaz visual pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_ui
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+# Declaración de volúmenes para la persistencia de datos
+volumes: 
+  pgdata:
