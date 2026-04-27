@@ -1,6 +1,6 @@
 from .actores_schema import ClienteSchema
 from .conductor_schema import ConductorSchema
-from .logistica_schema import VehiculoSchema, RutaSchema
+from .logistica_schema import VehiculoSchema, RutaSchema, ViajeSchema
 
 cliente_schema = ClienteSchema()
 clientes_schema = ClienteSchema(many=True)
@@ -13,3 +13,6 @@ vehiculos_schema = VehiculoSchema(many=True)
 
 ruta_schema = RutaSchema()
 rutas_schema = RutaSchema(many=True)
+
+viaje_schema = ViajeSchema()
+viajes_schema = ViajeSchema(many=True)

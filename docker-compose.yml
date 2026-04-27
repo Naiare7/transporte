@@ -28,9 +28,8 @@ services:
       POSTGRES_DB: mydb
     ports:
       - "5433:5432"
-   
     volumes:
-      - pgdata:/var/lib/postgresql/data
+       - pgdata:/var/lib/postgresql/data
     
   # Servicio 3: Nuestra interfaz visual pgAdmin
   pgadmin:

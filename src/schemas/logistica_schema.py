@@ -15,3 +15,11 @@ class RutaSchema(Schema):
     distancia_km = fields.Float(allow_none=True)
     tiempo_estimado_horas = fields.Float(allow_none=True)
     fecha_creacion = fields.DateTime(dump_only=True)
+
+class ViajeSchema(Schema):
+    id = fields.Int(dump_only=True)
+    conductor_id = fields.Int(required=True)
+    vehiculo_id = fields.Int(required=True)
+    pedido_id = fields.Int(required=True)
+    estado = fields.Str(required=True, validate=validate.OneOf(['Pendiente', 'En curso', 'Completado', 'Cancelado']))
+    fecha_creacion = fields.DateTime(dump_only=True)

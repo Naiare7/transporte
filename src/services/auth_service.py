@@ -19,7 +19,7 @@ class AuthService:
 
     @staticmethod
     def get_usuario_by_id(id):
-        return Usuario.query.get(id)
+        return db.session.get(Usuario, id)
 
     @staticmethod
     def verify_password(usuario, password):
