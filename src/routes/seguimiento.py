@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 from src.database.db import db
-from src.models.operaciones import InformeDescarga
 from src.services.seguimiento_service import SeguimientoService
 from src.schemas.seguimiento_schema import IncidenciaViajeSchema, FacturaSchema
 
@@ -52,54 +51,6 @@ def delete_incidencia(id):
 
     SeguimientoService.delete_incidencia(incidencia)
     return '', 204
-
-
-@bp.route('/informes-descarga', methods=['GET'])
-def get_informes():
-    informes = InformeDescarga.query.all()
-    return jsonify(informes_schema.dump(informes)), 200
-
-
-@bp.route('/informes-descarga/<int:id>', methods=['GET'])
-def get_informe(id):
-    informe = db.session.get(InformeDescarga, id)
-    if not informe:
-        return jsonify({'error': 'Informe no encontrado'}), 404
-    return jsonify(informe_schema.dump(informe)), 200
-
-
-@bp.route('/viajes/<int:viaje_id>/informe-descarga', methods=['GET'])
-def get_viaje_informe(viaje_id):
-    informe = SeguimientoService.get_informe_by_viaje(viaje_id)
-    if not informe:
-        return jsonify({'error': 'Informe no encontrado para este viaje'}), 404
-    return jsonify(informe_schema.dump(informe)), 200
-
-
-@bp.route('/informes-descarga', methods=['POST'])
-def create_informe():
-    try:
-        data = informe_schema.load(request.json)
-    except ValidationError as e:
-        return jsonify({'error': e.messages}), 400
-
-    informe = SeguimientoService.create_informe(data)
-    return jsonify(informe_schema.dump(informe)), 201
-
-
-@bp.route('/informes-descarga/<int:id>', methods=['PUT'])
-def update_informe(id):
-    informe = db.session.get(InformeDescarga, id)
-    if not informe:
-        return jsonify({'error': 'Informe no encontrado'}), 404
-
-    try:
-        data = informe_schema.load(request.json, partial=True)
-    except ValidationError as e:
-        return jsonify({'error': e.messages}), 400
-
-    informe = SeguimientoService.update_informe(informe, data)
-    return jsonify(informe_schema.dump(informe)), 200
 
 
 @bp.route('/facturas', methods=['GET'])

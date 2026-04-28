@@ -1,5 +1,5 @@
 from src.database.db import db
-from src.models.operaciones import IncidenciaViaje, DetallePedido, Factura, InformeDescarga
+from src.models.operaciones import IncidenciaViaje, DetallePedido, Factura
 
 
 class SeguimientoService:
