@@ -8,6 +8,7 @@ class IncidenciaViajeSchema(Schema):
     fecha_incidencia = fields.DateTime(dump_only=True)
 
 
+
 class FacturaSchema(Schema):
     id = fields.Int(dump_only=True)
     pedido_id = fields.Int(required=True)

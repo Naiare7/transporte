@@ -1,4 +1,19 @@
 venv/
+myEnv/
 __pycache__/
 instance/
 .pytest_cache/
+
+# Entornos y Secretos
+.env
+
+# Archivos compilados de Python
+*.pyc
+*.pyo
+
+# Configuraciones de editores de código
+.vscode/
+.idea/
+
+# Archivos propios del sistema operativo
+.DS_Store

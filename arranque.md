@@ -21,7 +21,6 @@ transporte/
 │   ├── routes/
 │   │   ├── actores.py      # CRUD Cliente, Conductor
 │   │   ├── logistica.py    # CRUD Vehiculo, Ruta
-│   │   ├── productos.py    # CRUD Producto
 │   │   ├── transacciones.py # CRUD Pedido, DetallePedido, Viaje
 │   │   ├── seguimiento.py  # CRUD Incidencia, Factura
 │   │   └── auth.py         # Login JWT
@@ -156,23 +155,6 @@ curl -X POST http://localhost:5000/api/rutas \
   -d '{"origen":"Madrid","destino":"Sevilla","distancia_km":530}'
 ```
 
-#### Productos (`/api/productos`)
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/productos` | Listar todos |
-| GET | `/api/productos/<id>` | Obtener uno |
-| POST | `/api/productos` | Crear |
-| PUT | `/api/productos/<id>` | Actualizar |
-| DELETE | `/api/productos/<id>` | Eliminar |
-
-```bash
-# Crear producto
-curl -X POST http://localhost:5000/api/productos \
-  -H "Content-Type: application/json" \
-  -d '{"nombre":"Trigo","categoria":"Grano"}'
-```
-
 ---
 
 ### Transacciones
@@ -208,7 +190,7 @@ curl -X POST http://localhost:5000/api/pedidos \
 # Crear detalle (calcula subtotal automático)
 curl -X POST http://localhost:5000/api/detalles-pedido \
   -H "Content-Type: application/json" \
-  -d '{"pedido_id":1,"producto_id":1,"cantidad":20,"tarifa_flete":50}'
+  -d '{"pedido_id":1,"cantidad":20,"tarifa_flete":50}'
 ```
 
 #### Viajes (`/api/viajes`)
@@ -278,7 +260,7 @@ curl -X POST http://localhost:5000/api/facturas \
 
 ```
 1. Crear catálogo base:
-   - Cliente → Conductor → Vehículo → Ruta → Producto
+   - Cliente → Conductor → Vehículo → Ruta
 
 2. Crear pedido:
    - Pedido (para un Cliente)
@@ -315,7 +297,11 @@ docker exec postgres_db psql -U camiones -d mydb -c "\dt"
 docker exec postgres_db psql -U camiones -d mydb -c "SELECT * FROM clientes;"
 
 # Limpiar todos los datos
+<<<<<<< HEAD
 docker exec postgres_db psql -U camiones -d mydb -c "TRUNCATE TABLE usuarios, clientes, conductores, vehiculos, rutas, productos, pedidos, detalles_pedido, viajes, incidencias_viaje, facturas CASCADE;"
+=======
+docker exec postgres_db psql -U camiones -d mydb -c "TRUNCATE TABLE usuarios, clientes, conductores, vehiculos, rutas, pedidos, detalles_pedido, viajes, incidencias_viaje, facturas CASCADE;"
+>>>>>>> fc2fce2251fd74868c8a7f6059d18b2a27e4ea3b
 ```
 
 ---

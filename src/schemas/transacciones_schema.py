@@ -10,7 +10,7 @@ class PedidoSchema(Schema):
 class DetallePedidoSchema(Schema):
     id = fields.Int(dump_only=True)
     pedido_id = fields.Int(required=True)
-    producto_id = fields.Int(required=True)
+    descripcion_carga = fields.Str(required=True, validate=validate.Length(min=1, max=150)) 
     cantidad = fields.Float(required=True)
     unidad_medida = fields.Str(validate=validate.Length(max=20))
     tarifa_flete = fields.Float(required=True)
