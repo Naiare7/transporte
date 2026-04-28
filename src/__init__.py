@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from .models.actores import Usuario, Cliente, Conductor
 
 db = SQLAlchemy()
 migrate = Migrate()
