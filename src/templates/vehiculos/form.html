@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Editar Vehículo" if vehiculo else "Nuevo Vehículo" }}{% endblock %}
+
+{% block content %}
+<h1>{{ "Editar Vehículo" if vehiculo else "Nuevo Vehículo" }}</h1>
+
+<form method="POST">
+    <div class="form-group">
+        <label for="patente">Patente:</label>
+        <input type="text" id="patente" name="patente" value="{{ vehiculo.patente if vehiculo else '' }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="capacidad_toneladas">Capacidad (Toneladas):</label>
+        <input type="number" step="0.01" id="capacidad_toneladas" name="capacidad_toneladas" value="{{ vehiculo.capacidad_toneladas if vehiculo else '' }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="tipo_grano">Tipo de Grano:</label>
+        <input type="text" id="tipo_grano" name="tipo_grano" value="{{ vehiculo.tipo_grano if vehiculo else '' }}">
+    </div>
+    
+    <div class="form-group">
+        <label>
+            <input type="checkbox" name="disponible" {{ "checked" if vehiculo and vehiculo.disponible else "" }}>
+            Disponible
+        </label>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ url_for('web.vehiculos_list') }}" class="btn">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

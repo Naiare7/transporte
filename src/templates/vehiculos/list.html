@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Vehículos{% endblock %}
+
+{% block content %}
+<h1>Vehículos</h1>
+<a href="{{ url_for('web.vehiculos_new') }}" class="btn btn-primary">Nuevo Vehículo</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patente</th>
+            <th>Capacidad (Ton)</th>
+            <th>Tipo Grano</th>
+            <th>Disponible</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vehiculo in vehiculos %}
+        <tr>
+            <td>{{ vehiculo.id }}</td>
+            <td>{{ vehiculo.patente }}</td>
+            <td>{{ vehiculo.capacidad_toneladas }}</td>
+            <td>{{ vehiculo.tipo_grano }}</td>
+            <td>{{ "Sí" if vehiculo.disponible else "No" }}</td>
+            {% with edit_url = url_for('web.vehiculos_edit', id=vehiculo.id), delete_url = url_for('web.vehiculos_delete', id=vehiculo.id) %}
+                {% include 'partials/_table_actions.html' %}
+            {% endwith %}
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No hay vehículos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

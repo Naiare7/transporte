@@ -1,0 +1,10 @@
+<nav class="navbar">
+    <div class="nav-brand">
+        <a href="{{ url_for('web.index') }}">Transporte</a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('web.clientes_list') }}">Clientes</a></li>
+        <li><a href="{{ url_for('web.vehiculos_list') }}">Vehículos</a></li>
+        <li><a href="{{ url_for('web.pedidos_list') }}">Pedidos</a></li>
+    </ul>
+</nav>

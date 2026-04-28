@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Editar Pedido" if pedido else "Nuevo Pedido" }}{% endblock %}
+
+{% block content %}
+<h1>{{ "Editar Pedido" if pedido else "Nuevo Pedido" }}</h1>
+
+<form method="POST">
+    <div class="form-group">
+        <label for="cliente_id">Cliente:</label>
+        <select id="cliente_id" name="cliente_id" required>
+            <option value="">Seleccione un cliente</option>
+            {% for cliente in clientes %}
+            <option value="{{ cliente.id }}" {{ "selected" if pedido and pedido.cliente_id == cliente.id else "" }}>
+                {{ cliente.razon_social }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado">
+            <option value="Pendiente" {{ "selected" if pedido and pedido.estado == 'Pendiente' else "" }}>Pendiente</option>
+            <option value="En Proceso" {{ "selected" if pedido and pedido.estado == 'En Proceso' else "" }}>En Proceso</option>
+            <option value="Completado" {{ "selected" if pedido and pedido.estado == 'Completado' else "" }}>Completado</option>
+            <option value="Cancelado" {{ "selected" if pedido and pedido.estado == 'Cancelado' else "" }}>Cancelado</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="observaciones_entrega">Observaciones:</label>
+        <textarea id="observaciones_entrega" name="observaciones_entrega">{{ pedido.observaciones_entrega if pedido else '' }}</textarea>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ url_for('web.pedidos_list') }}" class="btn">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

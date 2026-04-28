@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Pedidos{% endblock %}
+
+{% block content %}
+<h1>Pedidos</h1>
+<a href="{{ url_for('web.pedidos_new') }}" class="btn btn-primary">Nuevo Pedido</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+            <td>{{ pedido.id }}</td>
+            <td>{{ pedido.cliente.razon_social if pedido.cliente else 'N/A' }}</td>
+            <td>{{ pedido.fecha_pedido.strftime('%Y-%m-%d %H:%M') if pedido.fecha_pedido else 'N/A' }}</td>
+            <td>{{ pedido.estado }}</td>
+            <td>{{ pedido.observaciones_entrega }}</td>
+            {% with edit_url = url_for('web.pedidos_edit', id=pedido.id), delete_url = url_for('web.pedidos_delete', id=pedido.id) %}
+                {% include 'partials/_table_actions.html' %}
+            {% endwith %}
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No hay pedidos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

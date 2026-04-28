@@ -9,6 +9,7 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 class Config:
     # 3. Leer las variables
+    SECRET_KEY = os.getenv('SECRET_KEY', 'supersecretkey_supersecretkey_123456')
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'supersecretkey_supersecretkey_123456')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'supersecretkey_supersecretkey_123456')
