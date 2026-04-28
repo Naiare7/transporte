@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}{{ "Editar Pedido" if pedido else "Nuevo Pedido" }}{% endblock %}
+{% block title %}{% if pedido %}Editar Pedido{% else %}Nuevo Pedido{% endif %}{% endblock %}
 
 {% block content %}
-<h1>{{ "Editar Pedido" if pedido else "Nuevo Pedido" }}</h1>
+<h1>{% if pedido %}Editar Pedido{% else %}Nuevo Pedido{% endif %}</h1>
 
+<!-- Order form - handles both create and edit -->
 <form method="POST">
     <div class="form-group">
         <label for="cliente_id">Cliente:</label>
@@ -33,6 +34,7 @@
         <textarea id="observaciones_entrega" name="observaciones_entrega">{{ pedido.observaciones_entrega if pedido else '' }}</textarea>
     </div>
     
+    <!-- Form actions -->
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="{{ url_for('web.pedidos_list') }}" class="btn">Cancelar</a>

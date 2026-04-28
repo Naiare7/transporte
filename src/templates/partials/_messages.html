@@ -7,3 +7,9 @@
         </div>
     {% endif %}
 {% endwith %}
+
+{% if request.endpoint != 'web.index' %}
+<div class="back-to-home">
+    <a href="{{ url_for('web.index') }}" class="btn">← Volver al inicio</a>
+</div>
+{% endif %}

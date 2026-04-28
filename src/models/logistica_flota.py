@@ -1,8 +1,12 @@
+"""
+Logistics and Fleet Models - Defines vehicles, routes, and trips
+"""
 from src.database.db import db
 from sqlalchemy import func
 
-#  ENTIDAD CAMIÓN (Tu código perfecto)
+
 class Vehiculo(db.Model):
+    """Transport vehicles (trucks)"""
     __tablename__ = 'vehiculos'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -12,6 +16,7 @@ class Vehiculo(db.Model):
     disponible = db.Column(db.Boolean, default=True)
 
     def to_dict(self):
+        """Convert vehicle to dictionary"""
         return {
             "id": self.id,
             "patente": self.patente,
@@ -20,8 +25,9 @@ class Vehiculo(db.Model):
             "disponible": self.disponible
         }
 
-#  ENTIDAD RUTA (Los trayectos estándar)
+
 class Ruta(db.Model):
+    """Standard transport routes"""
     __tablename__ = 'rutas'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -30,34 +36,27 @@ class Ruta(db.Model):
     distancia_km = db.Column(db.Float)
     tiempo_estimado_horas = db.Column(db.Float)
 
-#  ENTIDAD VIAJE (El centro de operaciones)
+
 class Viaje(db.Model):
+    """Trip operations - core of transport operations"""
     __tablename__ = 'viajes'
     
     id = db.Column(db.Integer, primary_key=True)
     fecha_creacion = db.Column(db.DateTime, default=func.now())
     se_entrego = db.Column(db.Boolean, default=False)
     fecha_salida = db.Column(db.DateTime)
-    estado = db.Column(db.String(50), default='Programado') # Programado, En Tránsito, Completado
+    estado = db.Column(db.String(50), default='Programado')  # Programado, En Tránsito, Completado
     
-    # --- CLAVES FORÁNEAS (Relacionando tablas) ---
-    
-    # Un viaje TIENE QUE tener un conductor asignado (Viene del archivo actores.py)
+    # Foreign keys
     conductor_id = db.Column(db.Integer, db.ForeignKey('conductores.id'), nullable=False)
-    
-    # Un viaje TIENE QUE tener un camión asignado
     vehiculo_id = db.Column(db.Integer, db.ForeignKey('vehiculos.id'), nullable=False)
-
-    # Un viaje TIENE QUE tener una ruta asignada
     ruta_id = db.Column(db.Integer, db.ForeignKey('rutas.id'), nullable=False)
-
     pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False) 
-   
-    # --- RELACIONES DE FLASK-SQLALCHEMY ---
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    
+    # Relationships
     conductor = db.relationship('Conductor', backref=db.backref('viajes', lazy=True))
     vehiculo = db.relationship('Vehiculo', backref=db.backref('viajes', lazy=True))
     ruta = db.relationship('Ruta', backref=db.backref('viajes', lazy=True))
-
     pedido = db.relationship('Pedido', backref=db.backref('viajes', lazy=True))
     usuario = db.relationship('Usuario', backref=db.backref('viajes_planificados', lazy=True))

@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Lista de Clientes{% endblock %}
+{% block title %}Clientes List{% endblock %}
 
 {% block content %}
 <h1>Clientes</h1>
+<!-- Button to create new client -->
 <a href="{{ url_for('web.clientes_new') }}" class="btn btn-primary">Nuevo Cliente</a>
 
+<!-- Clients table -->
 <table>
     <thead>
         <tr>
@@ -25,11 +27,15 @@
             <td>{{ cliente.cif_nif }}</td>
             <td>{{ cliente.telefono }}</td>
             <td>{{ cliente.direccion }}</td>
-            {% with edit_url = url_for('web.clientes_edit', id=cliente.id), delete_url = url_for('web.clientes_delete', id=cliente.id) %}
-                {% include 'partials/_table_actions.html' %}
-            {% endwith %}
+            <td class="actions">
+                <a href="{{ url_for('web.clientes_edit', id=cliente.id) }}" class="btn btn-sm">Editar</a>
+                <form action="{{ url_for('web.clientes_delete', id=cliente.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                </form>
+            </td>
         </tr>
         {% else %}
+        <!-- Empty state -->
         <tr>
             <td colspan="6">No hay clientes registrados</td>
         </tr>
