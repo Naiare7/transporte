@@ -91,3 +91,11 @@ Puedes acceder a **pgAdmin** para gestionar la base de datos visualmente en:
 - **URL:** `http://localhost:5050`
 - **Usuario:** `admin@admin.com`
 - **Contraseña:** `admin`
+
+---
+
+## 🗄️ Esquema de Base de Datos (Modelo ER)
+
+A continuación se muestra el diagrama Entidad-Relación que ilustra la arquitectura de la base de datos de la plataforma logística, abarcando clientes, pedidos, vehículos, conductores y rutas.
+
+![Diagrama Entidad-Relación](docs/diagrama_er.png)
