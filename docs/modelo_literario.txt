@@ -1,0 +1,36 @@
+MODELO LITERARIO - SISTEMA DE TRANSPORTE Y LOGÍSTICA
+
+Objetivo de la aplicación:
+Desarrollar un sistema de backend (API REST) que proporcione una solución informática consolidada para la gestión logística de una empresa de transporte. El sistema debe permitir administrar la flota de vehículos, registrar a los conductores, organizar a los clientes y realizar un seguimiento de los pedidos, los viajes y la facturación correspondiente a los servicios realizados.
+
+Entidades principales y procesos del negocio:
+
+1. USUARIOS:
+   El sistema debe registrar a los usuarios (operadores o administradores) que gestionaran la aplicación de transporte, almacenando sus credenciales de acceso, nombre de usuario y correo electrónico.
+
+2. CLIENTES:
+   Se necesita mantener una base de datos con los clientes que contratan los portes. De cada cliente se debe almacenar su CIF/NIF, nombre o razón social, dirección, teléfono y correo electrónico.
+
+3. CONDUCTORES:
+   El sistema registrará a los trabajadores que manejan los vehículos. De ellos se guardará su DNI, nombre completo, teléfono, número de carnet de conducir, fecha de contratación y su estado actual (Disponible, En Viaje, Descanso).
+
+4. VEHÍCULOS:
+   La flota de la empresa debe estar categorizada. De cada camión/vehículo se requiere su matrícula (patente), marca, modelo, capacidad de carga en toneladas, fecha de mantenimiento y estado actual.
+
+5. RUTAS:
+   Los trayectos habituales están predefinidos o se establecen según orígenes y destinos. Una ruta debe incluir la ciudad de origen, la ciudad de destino, la distancia aproximada en kilómetros, el tiempo estimado de viaje y descripciones adicionales.
+
+6. PEDIDOS:
+   Un cliente puede realizar múltiples pedidos a lo largo de su ciclo. Cada pedido contendrá una fecha de registro, su estado (Pendiente, En Proceso, Completado, Cancelado) y debe estar fuertemente vinculado al cliente emisor.
+
+7. DETALLES DEL PEDIDO:
+   Un pedido marco se desgrana en el detalle exacto de la carga transaccionada. Se debe registrar qué mercancía es (tipo de carga), el peso o cantidad, tarifa calculada de flete, y un destino/origen particular si se requiere por carga.
+
+8. VIAJES:
+   El concepto de Ejecución del pedio. Un Viaje es la hoja de ruta que programa la logística asignando un Vehículo en concreto, un Conductor disponible y una Ruta específica de nuestro catálogo. Se registra la fecha saliente, la llegada real o estimada y el estado general de ese viaje.
+
+9. INCIDENCIAS DE VIAJE:
+   En un entorno logístico ocurren percances. Nuestro sistema debe dejar constancia de cualquier eventualidad que sufra un Viaje (avería, corte en carretera, etc.), reportando cuándo ocurrió, su descripción y la gravedad que supuso para la empresa.
+
+10. FACTURAS:
+   Al cierre de la operación, el negocio debe subsistir emitiendo cobros. Una factura nacerá ligada a un pedido concreto, cuantificando un subtotal y los impuestos (IVA), resultando en el total a pagar y el estado contable de dicha remesa.
