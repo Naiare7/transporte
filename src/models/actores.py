@@ -1,5 +1,6 @@
 from src.database.db import db
-from datetime import datetime
+from sqlalchemy import func
+from werkzeug.security import check_password_hash, generate_password_hash
 
 #  ENTIDAD USUARIO (Administradores)
 class Usuario(db.Model):
@@ -10,7 +11,18 @@ class Usuario(db.Model):
     nombre = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_creacion = db.Column(db.DateTime, default=func.now())
+
+    @property
+    def password(self):
+        raise AttributeError('password is write-only')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 #  ENTIDAD CLIENTE (Los que piden el transporte)
 class Cliente(db.Model):

@@ -1,5 +1,5 @@
 from src.database.db import db
-from datetime import datetime
+from sqlalchemy import func
 
 #  ENTIDAD CAMIÓN (Tu código perfecto)
 class Vehiculo(db.Model):
@@ -35,7 +35,7 @@ class Viaje(db.Model):
     __tablename__ = 'viajes'
     
     id = db.Column(db.Integer, primary_key=True)
-    fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_creacion = db.Column(db.DateTime, default=func.now())
     se_entrego = db.Column(db.Boolean, default=False)
     fecha_salida = db.Column(db.DateTime)
     estado = db.Column(db.String(50), default='Programado') # Programado, En Tránsito, Completado

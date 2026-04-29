@@ -1,0 +1,25 @@
+NORMALIZACIÓN DE LA BASE DE DATOS - SISTEMA DE TRANSPORTE
+
+El diseño de la base de datos se ha realizado siguiendo las reglas de normalización (1FN, 2FN y 3FN) con el objetivo de minimizar la redundancia de datos y evitar anomalías en las operaciones de inserción, actualización y borrado de la aplicación backend.
+
+1. Primera Forma Normal (1FN)
+--------------------------------------
+Un modelo cumple con la 1FN si todos sus atributos son atómicos (no divisibles, sin arreglos ni multilistas) y existe una clave primaria (PK) que identifica de manera única a cada tupla o registro.
+- En nuestro modelo logístico, todas las tablas (`usuarios`, `clientes`, `conductores`, `vehiculos`, etc.) tienen un identificador único definido en la columna `id` (Serial/Autoincremental) como su PK.
+- Carecemos de campos multivaluados: Si un conductor manejara múltiples tipos de teléfono y se quisieran todos, se habría creado otra tabla; como se pide información plana y de contacto principal, la información de correos/teléfonos cumple con un elemento por fila.
+
+2. Segunda Forma Normal (2FN)
+--------------------------------------
+La regla inyectada para la 2FN recae en que, iterando sobre un entorno 1FN, todos los atributos que no pertenecen a la clave principal deben depender funcional y completamente de esa clave (y no de una parte funcional de ella).
+- Al utilizar claves primarias simples (el `id` autogenerado único) en todas y cada una de nuestras tablas de PostgreSQL, no incurrimos en riesgos por dependencias condicionales/parciales en las "claves primarias compuestas", erradicando dicho problema de cimientos.
+- En las tablas transitivas (`detalles_pedido`), los atributos de tonelaje, tarifas y descriptivos emanan directamente como propiedad de dicha línea de pedido particular y de nada más.
+
+3. Tercera Forma Normal (3FN)
+--------------------------------------
+Para asegurar el estricto cumplimiento de la 3FN, la tabla debe estar en 2FN y, como colofón, no debe existir dependencia transitiva entre los atributos no clave (ningún campo que no sea clave debe explicar/depender de otro campo no clave).
+- Se observa su cumplimiento puro en la contabilidad: Se ha aislado la entidad `Facturas`. Los importes impositivos e históricos se congelan en el acto de la facturación y no se infieren calculando al vuelo en cada consulta sobre Pedidos.
+- Las tablas conectoras puras tales como `Viajes` vinculan explícitamente y sin sobrecarga semántica el marco relacional de la `Ruta` cursada, el `Conductor` empleado y el `Vehiculo` de transporte. Esto se hace únicamente referenciando claves foráneas (FK); en la tupla de "Viaje" no figura en ningún lado el nombre del conductor ni el tonelaje del vehículo, porque estos son delegados al JOIN, resguardando la integridad transitiva de la base de datos SQL.
+
+Conclusión:
+--------------------------------------
+Todo el diagrama Entidad-Relación y script fundacional resultante (modelo relacional de código) se encuentra normalizado hasta su Tercera Forma Normal (3FN), garantizando la máxima integridad logísticas para nuestro backend Flask.
