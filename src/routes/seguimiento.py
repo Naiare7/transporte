@@ -53,10 +53,6 @@ def delete_incidencia(id):
     return '', 204
 
 
-
-
-
-
 @bp.route('/facturas', methods=['GET'])
 def get_facturas():
     facturas = SeguimientoService.get_all_facturas()

@@ -1,8 +1,8 @@
-#  Proyecto TRANSPORTE API
+# 🚛 Proyecto TRANSPORTE API
 
 Sistema backend para la gestión logística de transporte, administración de flota, seguimiento de operaciones y gestión de actores (clientes y conductores). Construido con **Flask**, **PostgreSQL** y **Docker**.
 
-## Tecnologías Principales
+## 🚀 Tecnologías Principales
 - **Backend:** Flask (Python)
 - **Base de Datos:** PostgreSQL
 - **Autenticación:** JWT (Flask-JWT-Extended)
@@ -12,7 +12,7 @@ Sistema backend para la gestión logística de transporte, administración de fl
 
 ---
 
-##  Estructura del Proyecto
+## 📂 Estructura del Proyecto
 
 ```text
 transporte/
@@ -78,7 +78,7 @@ sudo docker compose logs -f app
 
 ---
 
-##  Autenticación (JWT)
+## 🔐 Autenticación (JWT)
 El proyecto usa **JSON Web Tokens** para la seguridad.
 1. Haz un `POST` a `/api/auth/login` con tus credenciales.
 2. Recibirás un `token`.
@@ -86,16 +86,8 @@ El proyecto usa **JSON Web Tokens** para la seguridad.
 
 ---
 
-##  Panel Visual de Base de Datos
+## 📊 Panel Visual de Base de Datos
 Puedes acceder a **pgAdmin** para gestionar la base de datos visualmente en:
 - **URL:** `http://localhost:5050`
 - **Usuario:** `admin@admin.com`
 - **Contraseña:** `admin`
-
----
-
-## 🗄️ Esquema de Base de Datos (Modelo ER)
-
-A continuación se muestra el diagrama Entidad-Relación que ilustra la arquitectura de la base de datos de la plataforma logística, abarcando clientes, pedidos, vehículos, conductores y rutas.
-
-![Diagrama Entidad-Relación](docs/diagrama_er.png)
