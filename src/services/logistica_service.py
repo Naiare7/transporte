@@ -1,6 +1,5 @@
 from src.database.db import db
-from src.models.logistica_flota import Vehiculo, Ruta
-
+from src.models.logistica_flota import Vehiculo, Ruta, Viaje
 
 class LogisticaService:
 
@@ -32,7 +31,7 @@ class LogisticaService:
         db.session.commit()
 
     @staticmethod
-    def get_all_rutas():
+    def get_rutas():
         return Ruta.query.all()
 
     @staticmethod
@@ -47,13 +46,13 @@ class LogisticaService:
         return ruta
 
     @staticmethod
-    def update_ruta(ruta, data):
-        for key, value in data.items():
-            setattr(ruta, key, value)
-        db.session.commit()
-        return ruta
+    def get_viajes():
+        return Viaje.query.all()
 
     @staticmethod
-    def delete_ruta(ruta):
-        db.session.delete(ruta)
+    def create_viaje(data):
+        # Asegúrate de que estos campos existan en el diccionario 'data'
+        nuevo_viaje = Viaje(**data)
+        db.session.add(nuevo_viaje)
         db.session.commit()
+        return nuevo_viaje

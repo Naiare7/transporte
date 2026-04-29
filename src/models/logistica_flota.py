@@ -35,6 +35,15 @@ class Ruta(db.Model):
     destino = db.Column(db.String(100), nullable=False)
     distancia_km = db.Column(db.Float)
     tiempo_estimado_horas = db.Column(db.Float)
+    
+def to_dict(self):
+    return {
+     "id": self.id,
+     "origen": self.origen,
+     "destino": self.destino,
+     "distancia_km": self.distancia_km,
+     "tiempo_estimado": self.tiempo_estimado_horas
+    }   
 
 
 class Viaje(db.Model):
@@ -60,3 +69,15 @@ class Viaje(db.Model):
     ruta = db.relationship('Ruta', backref=db.backref('viajes', lazy=True))
     pedido = db.relationship('Pedido', backref=db.backref('viajes', lazy=True))
     usuario = db.relationship('Usuario', backref=db.backref('viajes_planificados', lazy=True))
+
+
+def to_dict(self):
+        return {
+            "id": self.id,
+            "estado": self.estado,
+            "se_entrego": self.se_entrego,
+            "fecha_creacion": self.fecha_creacion.isoformat() if self.fecha_creacion else None,
+            "conductor_id": self.conductor_id,
+            "vehiculo_id": self.vehiculo_id,
+            "ruta_id": self.ruta_id
+        }

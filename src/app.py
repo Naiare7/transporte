@@ -3,7 +3,7 @@ from src.config import Config
 from src.database.db import db
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from src.models import actores, logistica_flota
+
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -11,18 +11,14 @@ def create_app(test_config=None):
     if test_config:
         app.config.update(test_config)
 
-    # Inicialización de extensiones
     db.init_app(app)
     Migrate(app, db) 
     JWTManager(app)
 
-    # Importar modelos y rutas
-   # ... código anterior (JWTManager, etc)
-    
     with app.app_context():
         from src.models import actores, logistica_flota
         db.create_all()
-        # Asegúrate de que las líneas de abajo tengan 8 espacios (o 2 tabs)
+        
         from src.routes.actores import bp as actores_bp
         from src.routes.logistica import bp as logistica_bp
         from src.routes.transacciones import bp as transacciones_bp
@@ -31,24 +27,20 @@ def create_app(test_config=None):
         from src.web.views import web_bp
 
         if 'actores' not in app.blueprints:
-            app.register_blueprint(actores_bp)
+            app.register_blueprint(actores_bp, url_prefix='/api')
         if 'logistica' not in app.blueprints:
-            app.register_blueprint(logistica_bp)
+            app.register_blueprint(logistica_bp, url_prefix='/api')
         if 'transacciones' not in app.blueprints:
-            app.register_blueprint(transacciones_bp)
+            app.register_blueprint(transacciones_bp, url_prefix='/api')
         if 'seguimiento' not in app.blueprints:
-            app.register_blueprint(seguimiento_bp)
+            app.register_blueprint(seguimiento_bp, url_prefix='/api')
         if 'auth' not in app.blueprints:
-            app.register_blueprint(auth_bp)
-<<<<<<< HEAD
-        print("¡Rutas registradas correctamente!")
-        
-=======
-            
+            app.register_blueprint(auth_bp, url_prefix='/api')
         if 'web' not in app.blueprints:
-            app.register_blueprint(web_bp)
+            app.register_blueprint(web_bp, url_prefix='/web')
+       
+        print("¡Rutas registradas correctamente!")
 
->>>>>>> 434f1863e0f5230e598b0d25af0c1ba840633e93
     @app.route('/')
     def index():
         return "¡Servidor de Transporte funcionando!"

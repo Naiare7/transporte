@@ -6,7 +6,7 @@ from datetime import datetime
 # Importar todas las entidades (10 Modelos)
 from src.models.actores import Usuario, Cliente, Conductor
 from src.models.logistica_flota import Vehiculo, Ruta, Viaje
-from src.models.operaciones import Pedido, DetallePedido, IncidenciaViaje, Factura
+from src.models.seguimiento import Pedido, DetallePedido, IncidenciaViaje, Factura
 
 app = create_app()
 

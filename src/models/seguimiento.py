@@ -21,6 +21,13 @@ class Pedido(db.Model):
     cliente = db.relationship('Cliente', backref=db.backref('pedidos', lazy=True))
     usuario = db.relationship('Usuario', backref=db.backref('pedidos_registrados', lazy=True))
 
+def to_dict(self):
+    return {
+        "id": self.id,
+        "fecha_pedido": self.fecha_pedido.isoformat() if self.fecha_pedido else None,
+        "estado": self.estado,
+        "observaciones_entrega": self.observaciones_entrega
+    }
 
 class DetallePedido(db.Model):
     """Order line items - specific cargo details"""
@@ -38,6 +45,16 @@ class DetallePedido(db.Model):
     pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
     pedido = db.relationship('Pedido', backref=db.backref('detalles', lazy=True))
 
+def to_dict(self):
+    return {
+        "id": self.id,
+        "descripcion_carga": self.descripcion_carga,
+        "cantidad": self.cantidad,
+        "unidad_medida": self.unidad_medida,
+        "tarifa_flete": self.tarifa_flete,
+        "subtotal": self.subtotal,
+        "requerimientos_especiales": self.requerimientos_especiales
+    }
 
 class IncidenciaViaje(db.Model):
     """Unexpected events during trips"""
@@ -52,6 +69,14 @@ class IncidenciaViaje(db.Model):
     viaje_id = db.Column(db.Integer, db.ForeignKey('viajes.id'), nullable=False)
     viaje = db.relationship('Viaje', backref=db.backref('incidencias', lazy=True))
 
+def to_dict(self):
+    return {
+        "id": self.id,
+        "fecha_incidencia": self.fecha_incidencia.isoformat() if self.fecha_incidencia else None,
+        "descripcion": self.descripcion,
+        "gravedad": self.gravedad,
+        "viaje_id": self.viaje_id
+    }
 
 class Factura(db.Model):
     """Billing - final charges to clients"""
@@ -65,3 +90,11 @@ class Factura(db.Model):
     # Foreign key to completed order
     pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False, unique=True)
     pedido = db.relationship('Pedido', backref=db.backref('factura', uselist=False))
+
+def to_dict(self):
+    return {
+        "id": self.id,
+        "fecha_emision": self.fecha_emision.isoformat() if self.fecha_emision else None,
+        "total": self.total,
+        "pagada": self.pagada
+    }

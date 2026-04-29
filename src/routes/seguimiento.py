@@ -12,13 +12,13 @@ factura_schema = FacturaSchema()
 facturas_schema = FacturaSchema(many=True)
 
 
-@bp.route('/incidencias-viaje', methods=['GET'])
+@bp.route('/incidencias-viaje', methods=['GET', 'POST'])
 def get_incidencias():
     incidencias = SeguimientoService.get_all_incidencias()
     return jsonify(incidencias_schema.dump(incidencias)), 200
 
 
-@bp.route('/incidencias-viaje/<int:id>', methods=['GET'])
+@bp.route('/incidencias-viaje/<int:id>', methods=['GET', 'POST'])
 def get_incidencia(id):
     incidencia = SeguimientoService.get_incidencia_by_id(id)
     if not incidencia:
@@ -26,7 +26,7 @@ def get_incidencia(id):
     return jsonify(incidencia_schema.dump(incidencia)), 200
 
 
-@bp.route('/viajes/<int:viaje_id>/incidencias', methods=['GET'])
+@bp.route('/viajes/<int:viaje_id>/incidencias', methods=['GET', 'POST'])
 def get_viaje_incidencias(viaje_id):
     incidencias = SeguimientoService.get_incidencias_by_viaje(viaje_id)
     return jsonify(incidencias_schema.dump(incidencias)), 200
@@ -53,13 +53,13 @@ def delete_incidencia(id):
     return '', 204
 
 
-@bp.route('/facturas', methods=['GET'])
+@bp.route('/facturas', methods=['GET', 'POST'])
 def get_facturas():
-    facturas = SeguimientoService.get_all_facturas()
+    facturas = SeguimientoService.get_facturas()
     return jsonify(facturas_schema.dump(facturas)), 200
 
 
-@bp.route('/facturas/<int:id>', methods=['GET'])
+@bp.route('/facturas/<int:id>', methods=['GET', 'POST'])
 def get_factura(id):
     factura = SeguimientoService.get_factura_by_id(id)
     if not factura:
@@ -67,7 +67,7 @@ def get_factura(id):
     return jsonify(factura_schema.dump(factura)), 200
 
 
-@bp.route('/pedidos/<int:pedido_id>/factura', methods=['GET'])
+@bp.route('/pedidos/<int:pedido_id>/factura', methods=['GET', 'POST'])
 def get_pedido_factura(pedido_id):
     factura = SeguimientoService.get_factura_by_pedido(pedido_id)
     if not factura:
@@ -89,7 +89,7 @@ def create_factura():
     return jsonify(factura_schema.dump(factura)), 201
 
 
-@bp.route('/facturas/<int:id>', methods=['PUT'])
+@bp.route('/facturas/<int:id>', methods=['PUT', 'POST'])
 def update_factura(id):
     factura = SeguimientoService.get_factura_by_id(id)
     if not factura:

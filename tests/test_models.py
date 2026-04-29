@@ -2,7 +2,7 @@ import pytest
 from src.database.db import db
 from src.models.actores import Usuario, Cliente, Conductor
 from src.models.logistica_flota import Vehiculo, Viaje, Ruta
-from src.models.operaciones import Pedido
+from src.models.seguimiento import Pedido
 
 # --- TESTS DE INTEGRIDAD DE USUARIOS ---
 def test_crear_usuario(app):

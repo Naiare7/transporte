@@ -30,7 +30,13 @@ class Usuario(db.Model):
         """Verify password against hash"""
         return check_password_hash(self.password_hash, password)
 
-
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nombre": self.nombre,
+            "email": self.email,
+            "password": self.password_hash  
+        }   
 class Cliente(db.Model):
     """Clients who request transport services"""
     __tablename__ = 'clientes'
@@ -40,7 +46,16 @@ class Cliente(db.Model):
     cif_nif = db.Column(db.String(20), unique=True, nullable=False)
     telefono = db.Column(db.String(20))
     direccion = db.Column(db.String(250))
-    
+
+def to_dict(self):
+        return {
+            "id": self.id,
+            "razon_social": self.razon_social,
+            "cif_nif": self.cif_nif,
+            "telefono": self.telefono,
+            "direccion": self.direccion
+        }    
+
     # Relationship: A client has many orders
     # pedidos = db.relationship('Pedido', backref='cliente', lazy=True)
 
@@ -55,3 +70,13 @@ class Conductor(db.Model):
     carnet_conducir = db.Column(db.String(50), nullable=False)
     telefono = db.Column(db.String(20))
     disponible = db.Column(db.Boolean, default=True)  # Available or on route
+
+def to_dict(self):
+        return {
+            "id": self.id,
+            "nombre_completo": self.nombre_completo,
+            "dni": self.dni,
+            "carnet_conducir": self.carnet_conducir,
+            "telefono": self.telefono,
+            "disponible": self.disponible
+        }

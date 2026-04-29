@@ -1,11 +1,38 @@
 from src.database.db import db
-from src.models.actores import Cliente, Conductor
+from src.models.actores import Usuario,Cliente, Conductor
 
 
 class ActoresService:
+    
+    @staticmethod
+    def get_usuarios():
+        return Usuario.query.all()
 
     @staticmethod
-    def get_all_clientes():
+    def get_usuario_by_id(id):
+        return db.session.get(Usuario, id)
+
+    @staticmethod
+    def create_usuario(data):
+        usuario = Usuario(**data)
+        db.session.add(usuario)
+        db.session.commit()
+        return usuario
+
+    @staticmethod
+    def update_usuario(usuario, data):
+        for key, value in data.items():
+            setattr(usuario, key, value)
+        db.session.commit()
+        return usuario
+
+    @staticmethod
+    def delete_usuario(usuario):
+        db.session.delete(usuario)
+        db.session.commit()
+
+    @staticmethod
+    def get_clientes():
         return Cliente.query.all()
 
     @staticmethod
@@ -32,7 +59,7 @@ class ActoresService:
         db.session.commit()
 
     @staticmethod
-    def get_all_conductores():
+    def get_conductores():
         return Conductor.query.all()
 
     @staticmethod
