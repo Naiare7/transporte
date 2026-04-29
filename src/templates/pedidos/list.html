@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos Lista{% endblock %}
+
+{% block content %}
+<h1>Pedidos</h1>
+<!-- Button to create new order -->
+<a href="{{ url_for('web.pedidos_new') }}" class="btn btn-primary">Nuevo Pedido</a>
+
+<!-- Orders table -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+            <td>{{ pedido.id }}</td>
+            <td>{{ pedido.cliente.razon_social if pedido.cliente else 'N/A' }}</td>
+            <td>{{ pedido.fecha_pedido.strftime('%Y-%m-%d %H:%M') if pedido.fecha_pedido else 'N/A' }}</td>
+            <td>{{ pedido.estado }}</td>
+            <td>{{ pedido.observaciones_entrega }}</td>
+            <td class="actions">
+                <a href="{{ url_for('web.pedidos_edit', id=pedido.id) }}" class="btn btn-sm">Editar</a>
+                <form action="{{ url_for('web.pedidos_delete', id=pedido.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <!-- Empty state -->
+        <tr>
+            <td colspan="6">No hay pedidos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

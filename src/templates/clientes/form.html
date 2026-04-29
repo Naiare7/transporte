@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{% if cliente %}Editar Cliente{% else %}Nuevo Cliente{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if cliente %}Editar Cliente{% else %}Nuevo Cliente{% endif %}</h1>
+
+<!-- Client form - handles both create and edit -->
+<form method="POST">
+    <div class="form-group">
+        <label for="razon_social">Razón Social:</label>
+        <input type="text" id="razon_social" name="razon_social" 
+               value="{{ cliente.razon_social if cliente else '' }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="cif_nif">CIF/NIF:</label>
+        <input type="text" id="cif_nif" name="cif_nif" 
+               value="{{ cliente.cif_nif if cliente else '' }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" 
+               value="{{ cliente.telefono if cliente else '' }}">
+    </div>
+    
+    <div class="form-group">
+        <label for="direccion">Dirección:</label>
+        <textarea id="direccion" name="direccion">{{ cliente.direccion if cliente else '' }}</textarea>
+    </div>
+    
+    <!-- Form actions -->
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ url_for('web.clientes_list') }}" class="btn">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

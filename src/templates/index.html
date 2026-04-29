@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Sistema de Transporte{% endblock %}
+
+{% block content %}
+<div class="welcome">
+    <h1>Bienvenido al Sistema de Transporte</h1>
+    <p>Seleccione un módulo para comenzar:</p>
+    
+    <div class="module-cards">
+        <div class="card">
+            <h2>Clientes</h2>
+            <p>Gestionar clientes del sistema</p>
+            <a href="{{ url_for('web.clientes_list') }}" class="btn">Ver Clientes</a>
+        </div>
+        
+        <div class="card">
+            <h2>Vehículos</h2>
+            <p>Gestionar flota de vehículos</p>
+            <a href="{{ url_for('web.vehiculos_list') }}" class="btn">Ver Vehículos</a>
+        </div>
+        
+        <div class="card">
+            <h2>Pedidos</h2>
+            <p>Gestionar pedidos de transporte</p>
+            <a href="{{ url_for('web.pedidos_list') }}" class="btn">Ver Pedidos</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

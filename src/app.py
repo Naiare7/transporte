@@ -28,6 +28,7 @@ def create_app(test_config=None):
         from src.routes.transacciones import bp as transacciones_bp
         from src.routes.seguimiento import bp as seguimiento_bp
         from src.routes.auth import bp as auth_bp
+        from src.web.views import web_bp
 
         if 'actores' not in app.blueprints:
             app.register_blueprint(actores_bp)
@@ -39,8 +40,15 @@ def create_app(test_config=None):
             app.register_blueprint(seguimiento_bp)
         if 'auth' not in app.blueprints:
             app.register_blueprint(auth_bp)
+<<<<<<< HEAD
         print("¡Rutas registradas correctamente!")
         
+=======
+            
+        if 'web' not in app.blueprints:
+            app.register_blueprint(web_bp)
+
+>>>>>>> 434f1863e0f5230e598b0d25af0c1ba840633e93
     @app.route('/')
     def index():
         return "¡Servidor de Transporte funcionando!"

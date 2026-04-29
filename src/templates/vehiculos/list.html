@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Vehículos Lista{% endblock %}
+
+{% block content %}
+<h1>Vehículos</h1>
+<!-- Button to create new vehicle -->
+<a href="{{ url_for('web.vehiculos_new') }}" class="btn btn-primary">Nuevo Vehículo</a>
+
+<!-- Vehicles table -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patente</th>
+            <th>Capacidad (Ton)</th>
+            <th>Tipo Grano</th>
+            <th>Disponible</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vehiculo in vehiculos %}
+        <tr>
+            <td>{{ vehiculo.id }}</td>
+            <td>{{ vehiculo.patente }}</td>
+            <td>{{ vehiculo.capacidad_toneladas }}</td>
+            <td>{{ vehiculo.tipo_grano }}</td>
+            <td>{{ "Sí" if vehiculo.disponible else "No" }}</td>
+            <td class="actions">
+                <a href="{{ url_for('web.vehiculos_edit', id=vehiculo.id) }}" class="btn btn-sm">Editar</a>
+                <form action="{{ url_for('web.vehiculos_delete', id=vehiculo.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <!-- Empty state -->
+        <tr>
+            <td colspan="6">No hay vehículos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
